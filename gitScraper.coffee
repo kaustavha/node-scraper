@@ -1,6 +1,8 @@
 ###
 # This is a script to clone all of a users repositories off of github
-# Usage: coffee gitScraper.coffee username
+# CLI Usage Examples:
+#   coffee gitScraper.coffee user :username
+#   coffee gitScraper.coffee org :orgname
 ###
 process = require 'process'
 githubApi = require 'github'
@@ -16,9 +18,19 @@ git = new githubApi(
 gitScrapeUser = (username) ->
     spawn 'mkdir', [username]
     git.repos.getFromUser {user: username}, (err, res) ->
+        console.log(err) if err
         res.forEach (repo) ->
             repoUrl = "https://github.com/#{username}/#{repo.name}.git"
             spawn 'git', ['clone', repoUrl], {cwd: username}
-            console.log repo.name
 
-gitScrapeUser process.argv[2]
+gitScrapeOrg = (orgname) ->
+    spawn 'mkdir', [orgname]
+    git.repos.getFromOrg {org: orgname}, (err ,res) ->
+        console.log(err) if err
+        res.forEach (repo) ->
+            repoUrl = "https://github.com/#{orgname}/#{repo.name}.git"
+            spawn 'git', ['clone', repoUrl], {cwd: orgname}
+
+switch process.argv[2]
+    when 'user' then gitScrapeUser process.argv[3]
+    when 'org' then gitScrapeOrg process.argv[3]
