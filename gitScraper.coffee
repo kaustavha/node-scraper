@@ -1,5 +1,6 @@
 ###
 # This is a script to clone all of a users repositories off of github
+# You need the git cli installed and the node-github pkg (npm install github)
 # CLI Usage Examples:
 #   coffee gitScraper.coffee user :username
 #   coffee gitScraper.coffee org :orgname
